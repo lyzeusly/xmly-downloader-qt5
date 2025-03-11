@@ -17,34 +17,7 @@ defaults:
     shell: pwsh
 
 jobs:
-   upload:
-     name: Upload
-     runs-on: ubuntu-latest
-     needs: build 
-     
-     steps:
-      - uses: actions/checkout@v2
-        with:
-          repository: jing332/plz-download
-      - uses: actions/setup-node@v2.1.1
-        with: 
-          node-version: v14.3.0 
-          
-      - name: Download All Build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          path: ./download
-       
-      - name: Upload to WebDAV
-        run: |
-          npm i
-          npm start
-        env:
-          url: ${{ secrets.nutstore_url }}
-          username: ${{ secrets.nutstore_username }}
-          password: ${{ secrets.nutstore_password }}
-  
-   build:
+  build:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -79,46 +52,17 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2.1.1
       
-      # - name: Install Qt
-      #   run: |
-      #     if ("${{ runner.os }}" -eq "Windows") {
-      #       curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-win32.tgz
-      #       7z x qt5-static-win32.tgz
-      #       7z x qt5-static-win32.tar
-      #       echo "::add-path::${{ github.workspace }}\c\libs\bin"
-      #     }
-      #     elseif ("${{ runner.os }}" -eq "Linux") {
-      #       curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-linux.tgz
-      #       tar xzf qt5-static-linux.tgz
-      #       echo "::add-path::${{ github.workspace }}/opt/libs/bin"
-      #     }
-      #     elseif ("${{ runner.os }}" -eq "MacOS") {
-      #       curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-osx.tgz
-      #       tar xzf qt5-static-osx.tgz
-      #       echo "::add-path::${{ github.workspace }}/opt/libs/bin"
-      #     }
-
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         
-          
       - name: Install Libs
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install libxcb*
-          sudo apt-get install libx11-xcb
-          sudo apt-get install libx11-xcb-dev
-          sudo apt-get install libxkbcommon-x11-dev
-
-      # - name: Init Environment
-      #   run: |
-      #     echo "::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}"
-      #     if ("${{ runner.os }}" -eq "windows") {
-      #       echo "::add-path::C:\msys64"
-      #     }
-      #     qmake -v
-      #     go env
+          sudo apt-get install -y libxcb*
+          sudo apt-get install -y libx11-xcb
+          sudo apt-get install -y libx11-xcb-dev
+          sudo apt-get install -y libxkbcommon-x11-dev
 
       - name: Init Environment
         run: |
@@ -131,7 +75,7 @@ jobs:
 
       - name: Build
         run: |
-          if ("${{ runner.os }}" -eq "windows") {
+          if ("${{ runner.os }}" -eq "Windows") {
             $env:MSYS2_PATH_TYPE="inherit"
             msys2_shell.cmd -defterm -no-start -here -mingw32 -l ./ci/build.sh
           }
@@ -149,8 +93,7 @@ jobs:
           }
           elseif ("${{ runner.os }}" -eq "Linux") {
             mkdir xmly-downloader-qt5_linux
-            ls
-            copy ./xmly-downloader-qt5 ./xmly-downloader-qt5_linux
+            cp ./xmly-downloader-qt5 ./xmly-downloader-qt5_linux
             tar cvfJ xmly-downloader-qt5_linux.tar.xz ./xmly-downloader-qt5_linux
           }
           elseif ("${{ runner.os }}" -eq "macOS") {
@@ -177,3 +120,30 @@ jobs:
         with:
           name: xmly-downloader-qt5_macOS_${{ github.run_id }}.tar.xz
           path: ./build/xmly-downloader-qt5_macOS.tar.xz
+
+  upload:
+    name: Upload
+    runs-on: ubuntu-latest
+    needs: build 
+    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: jing332/plz-download
+      - uses: actions/setup-node@v2.1.1
+        with: 
+          node-version: v14.3.0 
+          
+      - name: Download All Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: ./download
+       
+      - name: Upload to WebDAV
+        run: |
+          npm i
+          npm start
+        env:
+          url: ${{ secrets.nutstore_url }}
+          username: ${{ secrets.nutstore_username }}
+          password: ${{ secrets.nutstore_password }}
