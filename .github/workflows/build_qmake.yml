@@ -75,12 +75,13 @@ jobs:
           
       - name: Build
         run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
+          if ("${{ runner.os }}" -eq "Windows") {
             export MSYS2_PATH_TYPE="inherit"
             msys2_shell.cmd -defterm -no-start -here -mingw32 -l ./ci/build.sh
-          else
+          }
+          else {
             bash ./ci/build.sh
-          fi
+          }
           
       - name: Pack Application
         run: |
