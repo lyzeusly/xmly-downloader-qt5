@@ -150,21 +150,21 @@ jobs:
           
       - name: Upload Windows Artifact
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v2.1.4
+        uses: actions/upload-artifact@v4
         with:
           name: xmly-downloader-qt5_win32_${{ github.run_id }}.7z
           path: ./build/xmly-downloader-qt5_win32.7z
         
       - name: Upload Linux Artifact
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v2.1.4
+        uses: actions/upload-artifact@v4
         with:
           name: xmly-downloader-qt5_linux_${{ github.run_id }}.tar.xz
           path: ./build/xmly-downloader-qt5_linux.tar.xz
           
       - name: Upload MacOS Artifact
         if: runner.os == 'macOS'
-        uses: actions/upload-artifact@v2.1.4
+        uses: actions/upload-artifact@v4
         with:
           name: xmly-downloader-qt5_macOS_${{ github.run_id }}.tar.xz
           path: ./build/xmly-downloader-qt5_macOS.tar.xz
