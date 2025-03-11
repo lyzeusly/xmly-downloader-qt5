@@ -67,9 +67,9 @@ jobs:
       - name: Init Environment
         run: |
           echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          if [[ "${{ runner.os }}" == "Windows" ]]; then
+          if ( "${{ runner.os }}" == "Windows" ) { 
             echo "C:\msys64" >> $GITHUB_PATH
-          fi
+          }
           qmake -v
           go env
           
