@@ -79,24 +79,28 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2.1.1
       
+      # - name: Install Qt
+      #   run: |
+      #     if ("${{ runner.os }}" -eq "Windows") {
+      #       curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-win32.tgz
+      #       7z x qt5-static-win32.tgz
+      #       7z x qt5-static-win32.tar
+      #       echo "::add-path::${{ github.workspace }}\c\libs\bin"
+      #     }
+      #     elseif ("${{ runner.os }}" -eq "Linux") {
+      #       curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-linux.tgz
+      #       tar xzf qt5-static-linux.tgz
+      #       echo "::add-path::${{ github.workspace }}/opt/libs/bin"
+      #     }
+      #     elseif ("${{ runner.os }}" -eq "MacOS") {
+      #       curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-osx.tgz
+      #       tar xzf qt5-static-osx.tgz
+      #       echo "::add-path::${{ github.workspace }}/opt/libs/bin"
+      #     }
+
       - name: Install Qt
-        run: |
-          if ("${{ runner.os }}" -eq "Windows") {
-            curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-win32.tgz
-            7z x qt5-static-win32.tgz
-            7z x qt5-static-win32.tar
-            echo "::add-path::${{ github.workspace }}\c\libs\bin"
-          }
-          elseif ("${{ runner.os }}" -eq "Linux") {
-            curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-linux.tgz
-            tar xzf qt5-static-linux.tgz
-            echo "::add-path::${{ github.workspace }}/opt/libs/bin"
-          }
-          elseif ("${{ runner.os }}" -eq "MacOS") {
-            curl -LJO https://github.com/lkeegan/qt5-static/releases/download/5.15.0-no-zstd/qt5-static-osx.tgz
-            tar xzf qt5-static-osx.tgz
-            echo "::add-path::${{ github.workspace }}/opt/libs/bin"
-          }
+        uses: jurplel/install-qt-action@v4
+        
           
       - name: Install Libs
         if: runner.os == 'Linux'
