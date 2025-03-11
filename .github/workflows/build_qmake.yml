@@ -73,12 +73,6 @@ jobs:
           qmake -v
           go env
 
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW32
-          update: true
-          install: mingw-w64-i686-gcc make git
-
       - name: Build
         run: |
           if ("${{ runner.os }}" -eq "Windows") {
